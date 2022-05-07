@@ -7,7 +7,7 @@ static const BaseType_t app_cpu = 1;
 #endif
 
 // Some string to print
-const char msg[] = "Go Home Gota, Kaputu kaaak kaaak kaaak";
+const char msg[] = "Go Home Gota, Kaputu kaaak kaaak kaaak Go Home Gota,";
 
 
 // Task handles
@@ -27,16 +27,15 @@ void startTask1(void *parameter) {
   // Print string to Terminal
   Serial.print("Task1 is running on core ");
   Serial.println(xPortGetCoreID());
-  Serial.print("Setup: created Task priority = ");
-  Serial.println(uxTaskPriorityGet(task_1));
+
 
   while (1) {
     Serial.println();
     for (int i = 0; i < msg_len; i++) {
-      Serial.print(msg[i]);
+      Serial.print(msg[i]);             //message is printed
     }
     Serial.println();
-    vTaskDelay(10 / portTICK_PERIOD_MS);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
 }
 
@@ -46,8 +45,7 @@ void startTask1(void *parameter) {
 void startTask2(void *parameter) {
   Serial.print("Task2 is running on core ");
   Serial.println(xPortGetCoreID());
-  Serial.print("Setup: created Task priority = ");
-  Serial.println(uxTaskPriorityGet(task_2));
+
   while (1) {
     Serial.print('*');
     vTaskDelay(100 / portTICK_PERIOD_MS);
@@ -67,7 +65,7 @@ void setup() {
     NULL,                              //parameter to pass to function
     1,                                 //task priority
     &task_1,                          //task handle
-    app_cpu);                          //run on 1 core for demo porpuse
+    app_cpu);                         //run on 1 core 
 
   xTaskCreatePinnedToCore(                                                //use xTaskCreate() in vanila freertos
     startTask2,    //function
@@ -76,7 +74,7 @@ void setup() {
     NULL,         //parameter to pass to function
     2,            //task priority
     &task_2,      //task handle
-    app_cpu);     //run on 1 core for demo porpuse
+    app_cpu);     //run on 1 core 
 }
 
 void loop() {
