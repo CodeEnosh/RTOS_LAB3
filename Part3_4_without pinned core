@@ -6,8 +6,8 @@ unsigned int LED = LED_BUILTIN;
 
 unsigned int Delay_init = 100;  //initial delay before user input
 int Delay = Delay_init;        //User input delay
-char User_In;                 // User input value
-String pass;                  //Storing the value
+char User_In;                  // User input value
+String store;                    //Storing the value
 
 void Task1code(void *parameter) {  //creating task function to blink LED 
   
@@ -22,20 +22,21 @@ void Task1code(void *parameter) {  //creating task function to blink LED
   }
 }
 
-void Task2code(void *parameter){  //creating task function to get input delay
+void Task2code(void *parameter){  //creating task to get User input
 
- while(1) {                         //starting an infinity while loop
-  if(Serial.available()>0){         //checking availability of input
-     User_In=Serial.read();             //storing input value in val
-     pass=pass+User_In;                 //putting that value to pass string
-     Delay=pass.toInt();            //converting to int and storing that value to delay
+ while(1) {                         
+  if(Serial.available()>0){            //checking if any data is passed
+     User_In=Serial.read();           //storing input value
+     store=store+User_In;            //saving the input value
+     Delay=store.toInt();            //Converting the String saved to integer to give as the Delay
   }  
-  if(Serial.available()==0){        //checking input was not there
-     vTaskDelay(Delay_init / portTICK_PERIOD_MS);  //giving a delay
-     pass="";                       //resetting pass variable
+  if(Serial.available()==0){                        //if no data is inputted
+     vTaskDelay(Delay / portTICK_PERIOD_MS);        //continuing to blink with the same delay
+     store="";                                      //resetting store variable
   }
  }   
 }
+
 void setup() {
   Serial.begin(115200);
   pinMode(LED, OUTPUT);          //setting LED pin as output
