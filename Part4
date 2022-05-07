@@ -58,7 +58,7 @@ void setup() {
   Serial.println("Welcome To RTOS");
   
 
-  xTaskCreatePinnedToCore(                                               //use xTaskCreate() in vanila freertos
+  xTaskCreatePinnedToCore(                                               
     startTask1,                         //function for task1
     "Task1",                            //name of the task
     1024,                              //stack size(bytes)
@@ -67,7 +67,7 @@ void setup() {
     &task_1,                          //task handle
     app_cpu);                         //run on 1 core 
 
-  xTaskCreatePinnedToCore(                                                //use xTaskCreate() in vanila freertos
+  xTaskCreatePinnedToCore(                                                
     startTask2,    //function
     "Task2",       //name of the task
     1024,         //stack size(bytes)
