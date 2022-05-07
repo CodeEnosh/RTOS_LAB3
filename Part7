@@ -1,0 +1,49 @@
+TaskHandle_t TaskA;
+TaskHandle_t TaskB;
+
+
+void Task_A(void *parameter) {
+  while (1) {
+    Serial.print("I am Task A I am Running on CORE_ ");
+    Serial.println(xPortGetCoreID());                       //display the Task running core on the serial monitor
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+  }
+}
+
+void Task_B(void *parameter) {
+  while (1) {
+    Serial.print("I am Task B I am Running on CORE_ ");
+    Serial.println(xPortGetCoreID());                       //display the Task running core on the serial monitor
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+  }
+}
+
+
+void setup() {
+  // put your setup code here, to run once:
+
+  Serial.begin(115200);
+
+  xTaskCreatePinnedToCore(Task_A,                    //name of the pointer to the function
+                          "Task A",  //Task name
+                          1024,                     //  stack size
+                          NULL,                     //input parameter
+                          1,                        //priority 1
+                          &TaskA,                   //task handle
+                          0);                       //pinned Core 0
+
+
+  xTaskCreatePinnedToCore(Task_B,                    //name of the pointer to the function
+                          "Task B ",  //Task name
+                          1024,                     //  stack size
+                          NULL,                     //input parameter
+                          1,                        //priority 1
+                          &TaskB,                   //task handle
+                          1);                       //pinned Core 1
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
