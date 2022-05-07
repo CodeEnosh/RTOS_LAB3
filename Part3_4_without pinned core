@@ -1,0 +1,61 @@
+TaskHandle_t Task1;
+TaskHandle_t Task2;
+
+#define LED_BUILTIN 2
+unsigned int LED = LED_BUILTIN;
+
+unsigned int Delay_init = 100;  //initial delay before user input
+int Delay = Delay_init;        //User input delay
+char User_In;                 // User input value
+String pass;                  //Storing the value
+
+void Task1code(void *parameter) {  //creating task function to blink LED 
+  
+  while(1) {                         //starting an infinity while loop
+    digitalWrite(LED, HIGH);                         //light up LED
+    vTaskDelay(Delay / portTICK_PERIOD_MS);             
+    digitalWrite(LED, LOW);                          //turn off LED
+    vTaskDelay(Delay / portTICK_PERIOD_MS);     
+            
+    Serial.print("Current Delay in ms - ");
+    Serial.println(Delay);          //printing LED delay
+  }
+}
+
+void Task2code(void *parameter){  //creating task function to get input delay
+
+ while(1) {                         //starting an infinity while loop
+  if(Serial.available()>0){         //checking availability of input
+     User_In=Serial.read();             //storing input value in val
+     pass=pass+User_In;                 //putting that value to pass string
+     Delay=pass.toInt();            //converting to int and storing that value to delay
+  }  
+  if(Serial.available()==0){        //checking input was not there
+     vTaskDelay(Delay_init / portTICK_PERIOD_MS);  //giving a delay
+     pass="";                       //resetting pass variable
+  }
+ }   
+}
+void setup() {
+  Serial.begin(115200);
+  pinMode(LED, OUTPUT);          //setting LED pin as output
+  
+  //setting the Task1
+  xTaskCreate(Task2code,
+              "Input",
+              1024,
+              NULL,
+              1,
+              &Task2);
+              
+  //setting the Task2
+  xTaskCreate(Task1code,
+              "Toggle",
+              1024,
+              NULL,
+              1,
+              &Task1);   
+}
+void loop() {
+
+}
