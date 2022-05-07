@@ -1,0 +1,66 @@
+TaskHandle_t Task1;
+TaskHandle_t Task2;
+
+#define LED_BUILTIN 2
+unsigned int LED = LED_BUILTIN;
+
+void Task1code(void *parameter) {
+  Serial.print("Task1 is running on the pinned core ");
+  Serial.println(xPortGetCoreID());                       //display the Task running core on the serial monitor
+
+  while (1) {
+
+    digitalWrite(LED, HIGH);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+    digitalWrite(LED, LOW);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+
+  }
+
+}
+
+void Task2code(void *parameter) {
+  Serial.print("Task2 is running on the pinned core ");
+  Serial.println(xPortGetCoreID());                       //display the Task running core on the serial monitor
+
+  while (1) {
+
+    digitalWrite(LED, HIGH);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    digitalWrite(LED, LOW);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+
+  }
+
+}
+
+
+void setup() {
+  // put your setup code here, to run once:
+  
+  Serial.begin(115200);
+  pinMode(LED, OUTPUT);         //setting LED pin as output
+
+  xTaskCreatePinnedToCore(Task1code,                    //name of the pointer to the function
+                          "Toggle Led with 500ms",  //Task name
+                          1024,                     //  stack size
+                          NULL,                     //input parameter
+                          1,                        //priority 1
+                          &Task1,                   //task handle
+                          0);                       //pinned Core 0
+
+
+  xTaskCreatePinnedToCore(Task2code,                    //name of the pointer to the function
+                          "Toggle Led with 300ms",  //Task name
+                          1024,                     //  stack size
+                          NULL,                     //input parameter
+                          1,                        //priority 1
+                          &Task2,                   //task handle
+                          0);                       //pinned Core 0
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
